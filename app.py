@@ -42,10 +42,21 @@ def init_db():
                 note TEXT
             )
         """)
-        db.execute("""
-            INSERT OR IGNORE INTO keys (key, plan, status, created_at, note)
-            VALUES ('WZ-MASTER-LIFETIME-VIP99', 'lifetime', 'unused', datetime('now'), 'Master Test Key')
-        """)
+        default_keys = [
+            ('WZ-MASTER-LIFETIME-VIP99', 'lifetime', 'Master Test Key'),
+            ('WZ-CSP4K-KRSE8-W57JF', 'lifetime', 'Lifetime VIP 1'),
+            ('WZ-3RGJP-DHC2Q-5VDG6', 'lifetime', 'Lifetime VIP 2'),
+            ('WZ-NQEM3-5L3F5-7TL4F', 'lifetime', 'Lifetime VIP 3'),
+            ('WZ-6XSD9-GUZEB-GNFP6', 'lifetime', 'Lifetime VIP 4'),
+            ('WZ-4U3MX-HAEJL-8KUFA', 'lifetime', 'Lifetime VIP 5'),
+            ('WZ-X297X-TQL33-MPXTD', 'lifetime', 'Lifetime VIP 6'),
+            ('WZ-3V6F2-XFQ8K-GPQ29', 'lifetime', 'Lifetime VIP 7'),
+        ]
+        for k, p, n in default_keys:
+            db.execute("""
+                INSERT OR IGNORE INTO keys (key, plan, status, created_at, note)
+                VALUES (?, ?, 'unused', datetime('now'), ?)
+            """, (k, p, n))
         db.commit()
 
 init_db()
@@ -241,7 +252,7 @@ class LicenseHandler(BaseHTTPRequestHandler):
                     now_str = datetime.utcnow().isoformat() + "Z"
                     for _ in range(count):
                         db.execute("INSERT INTO keys (key, plan, status, created_at, note) VALUES (?, ?, 'unused', ?, ?)",
-                                   (generateKey(), plan, now_str, note))
+                                   (generate_key(), plan, now_str, note))
                     db.commit()
                 elif action == "reset_hwid":
                     k = form.get("key", [""])[0]

@@ -1,0 +1,1 @@
+# Python standart kütüphanesi (http.server, sqlite3) kullanır, harici paket gerekmez.
